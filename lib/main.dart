@@ -1,6 +1,8 @@
-
+// Commit 3: Add Hunger Timer
+// Hunger automatically increases over time.
 
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 void main() {
   runApp(MaterialApp(
@@ -18,6 +20,27 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   int happinessLevel = 50;
   int hungerLevel = 50;
   int energyLevel = 100;
+  Timer? _hungerTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startHungerTimer();
+  }
+
+  @override
+  void dispose() {
+    _hungerTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startHungerTimer() {
+    _hungerTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+      setState(() {
+        hungerLevel = (hungerLevel + 5).clamp(0, 100);
+      });
+    });
+  }
 
   void _playWithPet() {
     setState(() {
