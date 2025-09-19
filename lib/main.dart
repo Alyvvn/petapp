@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -19,9 +21,10 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   int energyLevel = 100;
   Timer? _hungerTimer;
 
-  // New mood system
   Color petColor = Colors.green;
   String petMoodText = "Neutral";
+
+  TextEditingController petNameController = TextEditingController();
 
   @override
   void initState() {
@@ -34,6 +37,14 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   void dispose() {
     _hungerTimer?.cancel();
     super.dispose();
+  }
+
+  void _setPetName() {
+    setState(() {
+      petName = petNameController.text.isNotEmpty
+          ? petNameController.text
+          : "Your Pet";
+    });
   }
 
   void _startHungerTimer() {
@@ -49,7 +60,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     setState(() {
       happinessLevel = (happinessLevel + 10).clamp(0, 100);
       energyLevel = (energyLevel - 10).clamp(0, 100);
-      hungerLevel = (hungerLevel + 5).clamp(0, 100); // playing makes pet hungry
+      hungerLevel = (hungerLevel + 5).clamp(0, 100);
       _updatePetState();
     });
   }
@@ -63,14 +74,12 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   }
 
   void _updatePetState() {
-    // Adjust happiness based on hunger
     if (hungerLevel > 70) {
       happinessLevel = (happinessLevel - 10).clamp(0, 100);
     } else if (hungerLevel < 30) {
       happinessLevel = (happinessLevel + 5).clamp(0, 100);
     }
 
-    // Mood rules
     if (happinessLevel >= 70 && energyLevel > 30) {
       petMoodText = "Happy";
       petColor = Colors.green;
@@ -94,10 +103,41 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            petName == "Your Pet"
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: petNameController,
+                          decoration: InputDecoration(
+                            hintText: "Enter Pet Name",
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: _setPetName,
+                          child: Text("Set Pet Name"),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(),
             Text("Name: $petName"),
             Text("Happiness: $happinessLevel"),
             Text("Hunger: $hungerLevel"),
             Text("Energy: $energyLevel"),
+            SizedBox(height: 16),
+            Container(
+              width: 200,
+              height: 200,
+              color: petColor,
+              child: Image.network(
+                "https://i.imgur.com/QwhZRyL.png",
+                fit: BoxFit.contain,
+              ),
+            ),
             SizedBox(height: 16),
             Text("Mood: $petMoodText"),
             SizedBox(height: 32),
