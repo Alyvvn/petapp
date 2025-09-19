@@ -96,7 +96,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Digital Pet"),
+        title: Text(petName),
         backgroundColor: petColor,
       ),
       body: Center(
